@@ -1,4 +1,5 @@
 ﻿using SimpleInventoryAPI.Data;
+using System.Text.Json.Serialization;
 
 namespace SimpleInventoryAPI.Models
 {
@@ -6,7 +7,7 @@ namespace SimpleInventoryAPI.Models
     {
         public required People People { get; set; }
         public IEnumerable<InventoryMoveItem>? Items { get; set; }
-
+        [JsonIgnore]
         public required InventoryMoveType MoveType { get; set; }
     }
 }
