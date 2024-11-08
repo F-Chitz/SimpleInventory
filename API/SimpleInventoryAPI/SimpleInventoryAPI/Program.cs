@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleInventoryAPI.Data;
+using SimpleInventoryAPI.Interfaces;
+using SimpleInventoryAPI.Models;
+using SimpleInventoryAPI.Repositories;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -25,6 +28,10 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod();
         });
 });
+
+builder.Services.AddScoped<IBaseRespository<People>, PeopleRepository>();
+builder.Services.AddScoped<IBaseRespository<Product>, ProductRepository>();
+
 
 var app = builder.Build();
 
