@@ -3,6 +3,7 @@ using SimpleInventoryAPI.Data;
 using SimpleInventoryAPI.Interfaces;
 using SimpleInventoryAPI.Models;
 using SimpleInventoryAPI.Repositories;
+using SimpleInventoryAPI.Seeder;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<SimpleInventoryDbContext>( options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddTransient<Seeder>();
 
 builder.Services.AddCors(options =>
 {
@@ -42,6 +44,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+        seeder.Seed();
+    }
 }
 
 app.UseHttpsRedirection();
