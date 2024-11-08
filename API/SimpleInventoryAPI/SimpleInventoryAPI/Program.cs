@@ -31,6 +31,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IBaseRespository<People>, PeopleRepository>();
 builder.Services.AddScoped<IBaseRespository<Product>, ProductRepository>();
+builder.Services.AddScoped<SaleRepository>();
+builder.Services.AddScoped<PurchaseRepository>();
 
 
 var app = builder.Build();

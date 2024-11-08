@@ -5,17 +5,18 @@ using SimpleInventoryAPI.Models;
 
 namespace SimpleInventoryAPI.Repositories
 {
-    public class InventoryMoveRepository : IBaseRespository<InventoryMove>
+    public class SaleRepository : IBaseRespository<InventoryMove>
     {
         private readonly SimpleInventoryDbContext _context;
 
-        public InventoryMoveRepository(SimpleInventoryDbContext context)
+        public SaleRepository(SimpleInventoryDbContext context)
         {
             _context = context;
         }
 
         public bool Add(InventoryMove Entity)
         {
+            Entity.MoveType = Data.InventoryMoveType.Sale;
             _context.Attach(Entity);
             return Save();
         }
@@ -28,21 +29,26 @@ namespace SimpleInventoryAPI.Repositories
             return Save();
         }
 
+
         public async Task<IEnumerable<InventoryMove>> GetAll(bool IncludeInactives = false)
         {
             if (IncludeInactives)
             {
                 return await _context.inventoryMoves
+                    .Where(e => e.MoveType == Data.InventoryMoveType.Sale)
                     .Include(e => e.People)
                     .Include(e => e.Items)
+                    .ThenInclude(i => i.Product)
                     .ToListAsync();
             }
             else
             {
                 return await _context.inventoryMoves
-                    .Where(e => e.IsActive == true)
+                    .Where(e => e.IsActive == true && 
+                                e.MoveType == Data.InventoryMoveType.Sale)
                     .Include(e => e.People)
                     .Include(e => e.Items)
+                    .ThenInclude(i => i.Product)
                     .ToListAsync();
             }
         }
@@ -50,9 +56,11 @@ namespace SimpleInventoryAPI.Repositories
         public async Task<InventoryMove> GetById(int Id)
         {
             return await _context.inventoryMoves
-                .Where(e => e.Id == Id)
+                .Where(e => e.Id == Id &&
+                            e.MoveType == Data.InventoryMoveType.Sale)
                 .Include(e => e.People)
                 .Include(e => e.Items)
+                .ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync();
         }
 
