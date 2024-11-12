@@ -1,16 +1,17 @@
 <template>
-    <div class="q-pa-md">
-        <div class="float-right q-gutter-md">
-            <q-btn color="white" text-color="black" label="Edit" icon="edit" @click="editMode = !editMode"
-                v-show="!isNew"/>
-            <q-btn color="red" text-color="black" label="Delete" icon="delete" @click="deleteModal = !deleteModal" v-show="!isNew"/>
-            <q-btn color="primary" text-color="white" label="Save" icon="save" @click="onSave" />
-        </div>
-        <div class="q-gutter-y-md column" style="max-width: 300px">
-
-            <q-input v-model="people.name" label="Name" :readonly="editMode" />
-            <q-input v-model="people.document" label="Document" :readonly="editMode" />
-
+    <div class="row justify-end">
+        <div class=" q-gutter-md q-pa-xs ">
+                <q-btn color="white" text-color="black" label="Edit" icon="edit" @click="editMode = !editMode"
+                    v-show="!isNew" />
+                <q-btn color="red" text-color="black" label="Delete" icon="delete" @click="deleteModal = !deleteModal"
+                    v-show="!isNew" />
+                <q-btn color="primary" text-color="white" label="Save" icon="save" @click="onSave" />
+            </div>
+    </div>
+    <div class="q-pa-md q-col-gutter-md row justify-around">
+        <div class="col">
+            <q-input v-model="people.name" label="Name" :readonly="!editMode" />
+            <q-input v-model="people.document" label="Document" :readonly="!editMode" />
         </div>
     </div>
 
@@ -45,7 +46,7 @@ export default {
                 .then(res => res.json())
                 .then(data => this.people = data)
             this.isNew = false
-            this.editMode = true
+            this.editMode = false
         }
     },
     methods: {

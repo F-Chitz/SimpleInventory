@@ -22,7 +22,7 @@ export default {
         return {
             cols: [
                 { name: 'peopleName', align: 'left', label: 'Customer', field: 'peopleName', sortable: true },
-                { name: 'total', align: 'left', label: 'Total', field: 'total', sortable: false },
+                { name: 'total', align: 'left', label: 'Total', field: 'total',format: (val) => `$ ${val}`, sortable: false },
             ],
             rows: []
         }
