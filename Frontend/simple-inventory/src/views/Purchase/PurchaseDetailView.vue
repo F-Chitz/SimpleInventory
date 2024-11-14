@@ -17,8 +17,8 @@
             <q-input v-model="purchase.people.name" label="Vendor" :readonly="!editMode" />
         </div>
 
-        <div>
-            <q-table title="Items" :rows="purchase.items" :columns="cols" row-key="name" binary-state-sort>            >
+        <div class="col-12">
+            <q-table title="Items" :rows="purchase.items" :columns="cols" row-key="name" binary-state-sort>
                 <template v-slot:body="props">
                     <q-tr :props="props">
                         <q-td key="productName" :props="props">
@@ -27,20 +27,25 @@
                         <q-td key="quantity" :props="props">
                             {{ props.row.quantity }}
                             <q-popup-edit v-model="props.row.quantity" v-slot="scope">
-                                <q-input v-model="scope.value" type="number" dense autofocus counter @keyup.enter="scope.set" />
+                                <q-input v-model="scope.value" type="number" dense autofocus counter
+                                    @keyup.enter="scope.set" />
                             </q-popup-edit>
                         </q-td>
                         <q-td key="unitPrice" :props="props">
-                            {{ props.row.unitPrice}}
+                           $ {{ props.row.unitPrice }}
                             <q-popup-edit v-model="props.row.unitPrice" v-slot="scope">
-                                <q-input v-model="scope.value" type="number" dense autofocus counter @keyup.enter="scope.set" />
+                                <q-input v-model="scope.value" type="number" dense autofocus counter
+                                    @keyup.enter="scope.set" />
                             </q-popup-edit>
                         </q-td>
                         <q-td key="subTotal" :props="props">
-                            {{ props.row.unitPrice * props.row.quantity }}
+                           $ {{ (props.row.unitPrice * props.row.quantity).toFixed(2) }}
+                        </q-td>
+                        <q-td key="actions" :props="props">
+                            <q-btn flat icon="delete" @click="deleteItem(props.row)"/>
                         </q-td>
                     </q-tr>
-                    
+
                 </template>
                 <template v-slot:bottom-row> <q-tr>
                         <q-td> <q-select v-model="_item.product" use-input hide-selected fill-input map-options
@@ -59,36 +64,40 @@
             </q-table>
         </div>
     </div>
+    <Modal v-show="deleteModal" @close="deleteModal = !deleteModal" @confirm="onDelete">
+        <h2>Delete</h2>
+        <p>Do you want to delete?</p>
+    </Modal>
 </template>
 
 <script>
-import { productUrl } from '@/global/Urls';
+import Modal from '@/components/Modal.vue';
+import { productUrl, purchaseUrl } from '@/global/Urls';
 
 export default {
     name: "PurchaseDetailView",
+    components:{
+        Modal
+    },
     data() {
         return {
+            editMode: true,
+            deleteModal: false,
+            isNew: true,
             purchase: {
                 id: 0,
                 people: {
                     id: 0,
                     name: ''
                 },
-                items: [/*{
-                    product: {
-                        id: 0,
-                        name: ''
-                    },
-                    productName: 'a',
-                    quantity: 0,
-                    unitPrice: 0
-                }*/]
+                items: []
             },
             cols: [
                 { name: 'productName', align: 'left', label: 'Product', field: 'productName', sortable: false },
                 { name: 'quantity', align: 'left', label: 'Quantity', field: 'quantity', sortable: false },
-                { name: 'unitPrice', align: 'left', label: 'Unit Price', field: 'unitPrice', format: (val) => `$ ${val}`, sortable: false },
-                { name: 'subTotal', align: 'right', label: 'Sub Total', field: 'subTotal', format: (val) => `$ ${val}`, sortable: false },
+                { name: 'unitPrice', align: 'left', label: 'Unit Price', field: 'unitPrice', sortable: false },
+                { name: 'subTotal', align: 'right', label: 'Sub Total', field: 'subTotal', sortable: false },
+                { name: 'actions', align: 'center', label: '', field: 'actions', sortable: false },
             ],
             products: [],
             _item: {
@@ -112,6 +121,17 @@ export default {
             .then(data => data.forEach(element => {
                 this.products.push(element)
             }))
+        if(this.$route.params.id){
+            fetch(purchaseUrl + this.$route.params.id)
+                .then(res => res.json())
+                .then(data => {
+                    data.items.forEach(e => e.productName = e.product.name)
+                    this.purchase = data})
+
+            this.isNew = false
+            this.editMode = false
+
+        }
 
     },
     methods: {
@@ -122,11 +142,54 @@ export default {
                 quantity: 0,
                 unitPrice: 0
             }
-            this.purchase.items.push(tItem)
-            console.log(JSON.stringify(this.purchase))
-
+            if(!this.purchase.items.find((value,index,array) => {return value.productName == tItem.productName} )){
+                this.purchase.items.push(tItem)
+            }
             this._item.product = null
 
+        },
+        deleteItem(row){
+            this.purchase.items.filter(
+                (value, index, array) =>{
+                    if(value.productName == row.productName)
+                        array.splice(index,1)
+                }
+            )
+        },
+        onSave(){
+            let _header = {
+                'Content-Type': "application/json;charset=utf-8"
+            }
+            if(this.isNew){
+                fetch(purchaseUrl,{
+                    headers: _header,
+                    method: "POST",
+                    body: JSON.stringify(this.purchase)
+                })
+                    .then(res => { if(res.status == 200)
+                         this.$router.push({name: "PurchaseListView"})})
+            }
+            else{
+                fetch(purchaseUrl,{
+                    headers: _header,
+                    method: "PUT",
+                    body: JSON.stringify(this.purchase)
+                })
+                    .then(res => { if(res.status == 200)
+                         this.$router.push({name: "PurchaseListView"})})
+            }
+        },
+        onDelete(){
+            let _header = {
+                'Content-Type': "application/json;charset=utf-8"
+            }
+            fetch(purchaseUrl + this.purchase.id,{
+                
+                    headers: _header,
+                    method: "DELETE"
+                })
+                    .then(res => { if(res.status == 200)
+                         this.$router.push({name: "PurchaseListView"})})
         }
     }
 }

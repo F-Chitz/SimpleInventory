@@ -35,9 +35,11 @@ namespace SimpleInventoryAPI.Repositories
             if (IncludeInactives)
             {
                 return await _context.inventoryMoves
-                    .Where(e=> e.MoveType == Data.InventoryMoveType.Purchase)
+                    .Where(e => e.MoveType == Data.InventoryMoveType.Purchase)
                     .Include(e => e.People)
                     .Include(e => e.Items)
+                    .ThenInclude(e => e.Product)
+
                     .ToListAsync();
             }
             else
@@ -47,6 +49,8 @@ namespace SimpleInventoryAPI.Repositories
                                 e.MoveType == Data.InventoryMoveType.Purchase)
                     .Include(e => e.People)
                     .Include(e => e.Items)
+                    .ThenInclude(e => e.Product)
+
                     .ToListAsync();
             }
         }
@@ -58,6 +62,7 @@ namespace SimpleInventoryAPI.Repositories
                             e.MoveType == Data.InventoryMoveType.Purchase)
                 .Include(e => e.People)
                 .Include(e => e.Items)
+                .ThenInclude(e => e.Product)
                 .FirstOrDefaultAsync();
         }
 
