@@ -35,7 +35,7 @@ export default {
                 name: '',
                 document: ''
             },
-            editMode: false,
+            editMode: true,
             deleteModal: false,
             isNew: true,
         }

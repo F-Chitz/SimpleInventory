@@ -37,7 +37,8 @@ export default {
                                 total: 0 
                     }
                     element.items.forEach(item =>{
-                        row.total += item.quantity * item.unitPrice
+                        if(item.isActive)
+                            row.total += item.quantity * item.unitPrice
                     })
                     this.rows.push(row)
                 console.log(this.rows)
