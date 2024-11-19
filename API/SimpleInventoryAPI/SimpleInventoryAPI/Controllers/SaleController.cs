@@ -38,7 +38,6 @@ namespace SimpleInventoryAPI.Controllers
         [HttpPost]
         public IActionResult Add(InventoryMove inventoryMove)
         {
-            inventoryMove.MoveType = Data.InventoryMoveType.Purchase;
             return _InventoryMoveRepository.Add(inventoryMove) ? Ok(inventoryMove) : BadRequest();
         }
 
