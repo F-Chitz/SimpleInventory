@@ -43,7 +43,7 @@ namespace SimpleInventoryAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(InventoryMove inventoryMove)
+        public async Task<IActionResult> Update(InventoryMove inventoryMove)
         {
             return _InventoryMoveRepository.Update(inventoryMove) ? Ok(inventoryMove) : BadRequest();
         }
