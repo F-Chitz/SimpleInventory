@@ -41,8 +41,6 @@ export default {
                             row.total += item.quantity * item.unitPrice
                     })
                     this.rows.push(row)
-                console.log(this.rows)
-                console.log(data)
 
                 });
 

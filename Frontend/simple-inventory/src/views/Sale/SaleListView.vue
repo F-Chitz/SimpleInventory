@@ -37,12 +37,10 @@ export default {
                                 total: 0 
                     }
                     element.items.forEach(item =>{
-                        row.total += item.quantity * item.unitPrice
+                        if(item.isActive)
+                            row.total += item.quantity * item.unitPrice
                     })
                     this.rows.push(row)
-                console.log(this.rows)
-                console.log(data)
-
                 });
 
             })
@@ -52,7 +50,7 @@ export default {
         onRowClick (evt, row) {
             this.$router.push({name:'SaleDetailView', params:{id: row.id}})
         },
-        createPurchase(){
+        createSale(){
             this.$router.push({name:'SaleNewView'})
         }
     }

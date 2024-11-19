@@ -14,8 +14,8 @@
             <q-input v-model="purchase.id" label="Id" :readonly="true" />
         </div>
         <div class="col-6">
-            <q-select v-model="purchase.people" map-options label="Vendor" :options="peoplesOptions"
-                option-label="name" option-value="id" :readonly="!editMode" >
+            <q-select v-model="purchase.people" map-options label="Vendor" :options="peoplesOptions" option-label="name"
+                option-value="id" :readonly="!editMode">
 
                 <template v-slot:no-option>
                     <q-item>
@@ -160,7 +160,6 @@ export default {
                 quantity: 0,
                 unitPrice: 0
             }
-            console.log(this.purchase.items)
             if (!this.purchase.items.find((value, index, array) => { return (value.productName == tItem.productName && value.isActive) })) {
                 this.purchase.items.push(tItem)
             }
