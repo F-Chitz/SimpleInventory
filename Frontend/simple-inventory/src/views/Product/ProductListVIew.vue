@@ -23,7 +23,6 @@ export default {
             cols: [
                 { name: 'names', align: 'left', label: 'Name', field: 'name', sortable: true },
                 { name: 'cost', align: 'left', label: 'Cost', field: 'cost', sortable: false, format: (val) =>`$ ${val}` },
-                { name: 'costMethod', align: 'left', label: 'Cost Method', field: 'costMethod', sortable: false}
             ],
             rows: []
         }
@@ -33,19 +32,7 @@ export default {
             .then(res => res.json())
             .then(data => {
                 data.forEach(element => {
-                    switch(element.costMethod){
-                        case 0:
-                            element.costMethod = 'None'
-                            break;
-                        case 1:
-                            element.costMethod = "AVCO"
-                            break;
-                        case 2:
-                            element.costMethod = "FIFO"
-                            break;
-                    }
-
-                    this.rows.push(element)
+                        this.rows.push(element)
                 });
             })
             .catch(e => { })

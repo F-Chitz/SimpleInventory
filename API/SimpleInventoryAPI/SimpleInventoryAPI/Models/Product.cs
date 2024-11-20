@@ -6,7 +6,6 @@ namespace SimpleInventoryAPI.Models
     {
         public required string Name { get; set; }
 
-        public CostMethod CostMethod { get; set; }
         public decimal Cost { get; set; }
     }
 }

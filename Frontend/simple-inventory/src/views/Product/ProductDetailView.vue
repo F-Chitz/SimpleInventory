@@ -23,7 +23,6 @@
                 </template>
             </q-field>
 
-            <q-select map-options emit-value v-model="product.costMethod" label="Cost Method" :options="costMethodOptions" />
         </div>
     </div>
 
@@ -52,7 +51,6 @@ export default {
             product: {
                 id: 0,
                 name: "",
-                costMethod: 0,
                 cost: 0
             },
             moneyFormatForDirective: {
@@ -62,20 +60,6 @@ export default {
                 masked: false,
                 precision: 2,
             },
-            costMethodOptions: [
-                {
-                    label: "None",
-                    value: 0
-                },
-                {
-                    label: "AVCO",
-                    value: 1
-                },
-                {
-                    label: "FIFO",
-                    value: 2
-                }
-            ]
         }
     },
     mounted() {
